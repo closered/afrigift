@@ -4,21 +4,17 @@ class OrdersController < ApplicationController
 
   respond_to :html
 
-  def index
-    @orders = Order.all
-    respond_with(@orders)
+  def sales
+    @orders = Order.all.where(seller: current_user).order("created_at DESC")
   end
 
-  def show
-    respond_with(@order)
+  def purchases
+    @orders = Order.all.where(buyer: current_user).order("created_at DESC")
   end
 
   def new
     @order = Order.new
     @listing = Listing.find(params[:listing_id])
-  end
-
-  def edit
   end
 
   def create
@@ -39,16 +35,6 @@ class OrdersController < ApplicationController
         format.json { render json: @orders.error, status: :uprocessable_entity }
       end
     end
-  end
-
-  def update
-    @order.update(order_params)
-    respond_with(@order)
-  end
-
-  def destroy
-    @order.destroy
-    respond_with(@order)
   end
 
   private
